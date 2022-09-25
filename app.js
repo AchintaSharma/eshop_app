@@ -10,6 +10,12 @@ const User = require("./models/user.model");
 const constants = require("./utils/constants")
 const bcrypt = require("bcryptjs");
 
+
+/**
+ * Read JSON request body
+ */
+app.use(express.json());
+
 /**
  * Connect to the DB
  */
@@ -53,7 +59,7 @@ async function init () {
             password : bcrypt.hashSync("welcome", 10),
             phoneNumber : "7002795845",
             role : constants.roles.admin,
-            userName : "AchinttaSharma"
+            userName : "AchintaSharma"
         })
 
         console.log(user);
@@ -61,6 +67,12 @@ async function init () {
         console.log("Error while storing the user", err.message);
     }
 }
+
+/**
+ * Plug in routes
+ */
+
+require("./routes/auth.routes")(app);
 
 /**
  * Start the server
