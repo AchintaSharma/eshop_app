@@ -3,10 +3,7 @@ const constants = require("../utils/constants");
 
 //Create user schema
 const userSchema = new mongoose.Schema({
-    name : {
-        type : String,
-        required : true
-    },
+    _id : mongoose.SchemaTypes.ObjectId,
     email : {
         type : String,
         required : true
@@ -38,3 +35,5 @@ const userSchema = new mongoose.Schema({
         required : true,
     }
 }, {timestamps : true, versionKey : false});
+
+module.exports = mongoose.model('User', userSchema);
