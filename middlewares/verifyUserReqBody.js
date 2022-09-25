@@ -67,17 +67,6 @@ function isValidEmail(email) {
     return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
 }
 
-// // async function doesEmailExist(emailId) {
-//     try {
-//         console.log("email : ", emailId )
-
-//         console.log(emailExist);
-//         return emailExist;
-//     } catch(err) {
-//         console.log("error while fetching email". err.message);
-//     }
-// }
-
 module.exports = {
     validateSignUpRequestBody: validateSignUpRequestBody
 }

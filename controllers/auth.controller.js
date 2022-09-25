@@ -3,13 +3,14 @@
  */
 const User = require("../models/user.model");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const authSecret = require("../configs/auth.config");
 
 /**
- * User registration
+ * User registration/signup
 */
 exports.signup = async (req, res) => {
     //Read user signup request body
-    console.log(req.body);
     const userObj = {
         email: req.body.email,
         firstName: req.body.firstName,
@@ -41,8 +42,50 @@ exports.signup = async (req, res) => {
             message: "Some internal error happened while inserting new user"
         })
     }
-    
 }
 
+/**
+     * User login
+     */
 
+ exports.signin = async (req, res) => {
+    //Check if the user exists
+    const user = await User.findOne({ userName : req.body.userName});
+    
+    if(!user) {
+        return res.status(400).send({
+            message : "User does not exist"
+        })
+    }
+
+    //Check if the password is correct 
+    console.log(req.body.password);
+    
+    const isPasswordValid = bcrypt.compareSync(req.body.password, user.password);
+    if(!isPasswordValid) {
+        return res.status(400).send({
+            message : "Password is incorrect"
+        })
+    }
+
+    //Generate the token 
+
+    const token = jwt.sign({
+        userName : user.userName,
+        role : user.role,
+        createdAt : Date.now()
+    }, authSecret.secret, {expiresIn : 120})
+
+    //Return response
+
+    return res.status(200).send({
+        email : user.email,
+        firstName : user.firstName,
+        lastName : user.lastName,
+        phoneNumber : user.userName,
+        role : user.role,
+        userName : user.userName,
+        accessToken : token
+    })
+}
 
