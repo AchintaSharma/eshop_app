@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-// const User = require("../models/user.model");
 
 const addressSchema = new mongoose.Schema({
     _id : mongoose.Schema.Types.ObjectId,
@@ -33,7 +32,7 @@ const addressSchema = new mongoose.Schema({
         type : mongoose.Schema.Types.ObjectId,
         ref : 'User'
     }
-})
+}, {versionKey : false})
 
 module.exports = mongoose.model('Address', addressSchema);
 
