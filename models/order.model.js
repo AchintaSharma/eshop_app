@@ -1,9 +1,8 @@
 const mongoose = require("mongoose");
 
 const orderSchema = new mongoose.Schema({
-    _id : mongoose.Schema.Types.ObjectId,
     amount : {
-        type : float,           //Check this
+        type : Number,           //Or mongoose.Types.Decimal128?
         required : true
     },
     orderDate : {               //Check if the only timestamp will do

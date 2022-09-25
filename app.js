@@ -6,7 +6,9 @@ const app = express();
 const serverConfig = require("./configs/server.config");
 const mongoose = require("mongoose");
 const dbConfig = require("./configs/db.config");
-
+const User = require("./models/user.model");
+const constants = require("./utils/constants")
+const bcrypt = require("bcryptjs");
 
 /**
  * Connect to the DB
@@ -21,9 +23,44 @@ db.on("error", () => {
 
 db.once("open", () => {
     console.log("Connected to the MongoDB");
+    /**
+     * Initialize
+     */
+    init();
 })
 
+/**
+ * Initialize : Check for and create ADMIN creds
+ */
+async function init () {
+    //Check if admin is present
+    try {
+        const adminUser = await User.findOne({role : constants.roles.admin});
 
+        if(adminUser) {
+            console.log("Admin user already exists");
+            return;
+        } 
+    } catch (err) {
+        console.log("Error while fetching user", err.message);
+    }
+
+    try {
+        const user = await User.create({
+            email : "23achinta@gmail.com",
+            firstName : "Achinta",
+            lastName : "Sharma",
+            password : bcrypt.hashSync("welcome", 10),
+            phoneNumber : "7002795845",
+            role : constants.roles.admin,
+            userName : "AchinttaSharma"
+        })
+
+        console.log(user);
+    } catch (err) {
+        console.log("Error while storing the user", err.message);
+    }
+}
 
 /**
  * Start the server
