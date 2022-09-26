@@ -33,9 +33,13 @@ validateSignUpRequestBody = async (req, res, next) => {
         })
     } 
     //Validate phone number
-    if (!req.body.phoneNumber || req.body.phoneNumber.length != 10) {
+    if (!req.body.phoneNumber) {
         return res.status(400).send({
-            message: "phone number is not valid"
+            message: "phone number is not provided"
+        })
+    } else if (!isValidPhoneNo(req.body.phoneNumber)) {
+        return res.status(400).send({
+            message : "phone number is invalid"
         })
     }
     //Validate role
@@ -65,6 +69,10 @@ validateSignUpRequestBody = async (req, res, next) => {
 
 function isValidEmail(email) {
     return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
+}
+
+function isValidPhoneNo(phoneNo) {
+    return /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im.test(phoneNo);
 }
 
 module.exports = {
