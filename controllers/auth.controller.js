@@ -59,8 +59,7 @@ exports.signup = async (req, res) => {
     }
 
     //Check if the password is correct 
-    console.log(req.body.password);
-    
+   
     const isPasswordValid = bcrypt.compareSync(req.body.password, user.password);
     if(!isPasswordValid) {
         return res.status(400).send({
