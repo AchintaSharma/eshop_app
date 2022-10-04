@@ -3,6 +3,8 @@ const constants = require("../utils/constants");
 
 //Create user schema
 const userSchema = new mongoose.Schema({
+    //id:
+    //created: 
     email : {
         type : String,
         required : true,
@@ -30,6 +32,7 @@ const userSchema = new mongoose.Schema({
         default : constants.roles.user,
         enum : [constants.roles.admin, constants.roles.user]
     },
+    //updated:
     userName : {
         type : String,
         required : true,
