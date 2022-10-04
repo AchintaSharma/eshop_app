@@ -49,7 +49,7 @@ exports.signup = async (req, res) => {
 exports.signin = async (req, res) => {
     try {
         //Check if the user exists
-        const user = await User.findOne({ $or: [{ userName: req.body.userName }, { email: req.body.email }] });
+        const user = await User.findOne({ email: req.body.email });
 
         if (!user) {
             return res.status(400).send({
@@ -80,7 +80,7 @@ exports.signin = async (req, res) => {
         }
 
         res.cookie('x-access-token', token, options)
-
+        res.header('x-auth-token', token);
         //Return response
         return res.status(200).send({
             email: user.email,

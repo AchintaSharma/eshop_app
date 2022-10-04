@@ -8,10 +8,10 @@ const User = require("../models/user.model");
 const constants = require("../utils/constants");
 
 verifyToken = (req, res, next) => {
-    //Read the token passed in the header
-    console.log(req.cookies);
-    const token = req.cookies['x-access-token'] ? req.cookies['x-access-token'] : req.headers['x-access-token'];
 
+    //Read the token passed in the header    
+    const token = req.cookies['x-access-token'] ? req.cookies['x-access-token'] : req.headers['x-auth-token'];
+    console.log("\ntoken: ", token)
     //validate token
     if (!token) {
         return res.status(401).send({
@@ -35,8 +35,8 @@ verifyToken = (req, res, next) => {
  */
 
 isAdmin = async (req, res, next) => {
-    console.log(req.body);
-    // console.log(req.cookies);
+    // console.log(req.body);
+    console.log(req.cookies);
     const user = await User.findOne({ userName: req.body.userName });
     if (user && user.role === constants.roles.admin) {
         next();
