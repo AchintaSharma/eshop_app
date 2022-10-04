@@ -4,6 +4,7 @@
 const User = require("../models/user.model");
 const constants = require("../utils/constants");
 validateSignUpRequestBody = async (req, res, next) => {
+
     // Validate email
     if (!req.body.email) {
         return res.status(400).send({
@@ -20,18 +21,21 @@ validateSignUpRequestBody = async (req, res, next) => {
                 message: "email is already in use"
             })
     }
+
     //Validate name
     if (!req.body.firstName || !req.body.lastName) {
         return res.status(400).send({
             message: "first name or last name is not provided"
         })
     }
+
     //Validate password
-    if(!req.body.password || req.body.password.length < 8) {
+    if (!req.body.password || req.body.password.length < 8) {
         return res.status(400).send({
             message: "password is not provided or is less than 8 characters"
         })
-    } 
+    }
+
     //Validate phone number
     if (!req.body.phoneNumber) {
         return res.status(400).send({
@@ -39,25 +43,32 @@ validateSignUpRequestBody = async (req, res, next) => {
         })
     } else if (!isValidPhoneNo(req.body.phoneNumber)) {
         return res.status(400).send({
-            message : "phone number is invalid"
+            message: "phone number is invalid"
         })
     }
-    //Validate role
-    if (!req.body.role) {
+
+    //Validate role 
+    if (req.body.role === "") {
+        req.body.role = constants.roles.user;
+    }
+    if (req.body.role === constants.roles.admin) {
         return res.status(400).send({
-            message: "role is not provided"
-        })
-    } else if (!(req.body.role === constants.roles.admin || req.body.role === constants.roles.user)) {
-        return res.status(400).send({
-            message: "not a valid role"
+            message: "admin signup is not allowed"
         })
     }
+    if (req.body.role !== constants.roles.user && req.body.role !== constants.roles.admin) {
+        return res.status(400).send({
+            message: "invalid role"
+        })
+    }
+    
+    //Validate userName
     if (!req.body.userName) {
         return res.status(400).send({
             message: "user name is not provided"
         })
     } else {
-        const userNameExist = await User.findOne({ userName : req.body.userName });
+        const userNameExist = await User.findOne({ userName: req.body.userName });
         if (userNameExist)
             return res.status(400).send({
                 message: "user name is already in use"
