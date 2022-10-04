@@ -12,20 +12,20 @@ validateSignUpRequestBody = async (req, res, next) => {
         })
     } else if (!isValidEmail(req.body.email)) {
         return res.status(400).send({
-            message: "email id is not valid"
+            message: "Invalid email-id format!"
         })
     } else {
         const emailExist = await User.findOne({ email: req.body.email });
         if (emailExist)
             return res.status(400).send({
-                message: "email is already in use"
+                message: "Try any other email, this email is already registered!"
             })
     }
 
     //Validate name
     if (!req.body.firstName || !req.body.lastName) {
         return res.status(400).send({
-            message: "first name or last name is not provided"
+            message: "First name or last name is not provided"
         })
     }
 
@@ -39,11 +39,11 @@ validateSignUpRequestBody = async (req, res, next) => {
     //Validate phone number
     if (!req.body.phoneNumber) {
         return res.status(400).send({
-            message: "phone number is not provided"
+            message: "Phone number is not provided"
         })
     } else if (!isValidPhoneNo(req.body.phoneNumber)) {
         return res.status(400).send({
-            message: "phone number is invalid"
+            message: "Invalid phone number!"
         })
     }
 
@@ -58,7 +58,7 @@ validateSignUpRequestBody = async (req, res, next) => {
     }
     if (req.body.role !== constants.roles.user && req.body.role !== constants.roles.admin) {
         return res.status(400).send({
-            message: "invalid role"
+            message: "Invalid role"
         })
     }
     

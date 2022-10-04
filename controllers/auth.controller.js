@@ -12,6 +12,7 @@ const authSecret = require("../configs/auth.config");
 exports.signup = async (req, res) => {
     //Read user signup request body
     const userObj = {
+        _id: await User.find().count() + 1,
         email: req.body.email,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -27,14 +28,11 @@ exports.signup = async (req, res) => {
 
         //Return response 
         const userResp = {
-            email: user.email,
+            _id: user._id,
             firstName: user.firstName,
             lastName: req.body.lastName,
-            phoneNumber: user.phoneNumber,
-            role: user.role,
-            userName: req.body.userName
+            email: user.email,
         }
-
         res.status(201).send(userResp);
     } catch (err) {
         console.log("Error while creating new user", err.message);
@@ -51,19 +49,19 @@ exports.signup = async (req, res) => {
 exports.signin = async (req, res) => {
     try {
         //Check if the user exists
-        const user = await User.findOne({ userName: req.body.userName });
+        const user = await User.findOne({ $or: [{ userName: req.body.userName }, { email: req.body.email }] });
 
         if (!user) {
             return res.status(400).send({
-                message: "User does not exist"
+                message: "This email has not been registered!"
             })
         }
 
         //Check if the password is correct 
         const isPasswordValid = bcrypt.compareSync(req.body.password, user.password);
         if (!isPasswordValid) {
-            return res.status(400).send({
-                message: "Password is incorrect"
+            return res.status(401).send({
+                message: "Invalid Credentials!"
             })
         }
 
@@ -73,6 +71,15 @@ exports.signin = async (req, res) => {
             role: user.role,
             createdAt: Date.now()
         }, authSecret.secret, { expiresIn: 120 })
+
+        //Set token into cookies
+        let options = {
+            sameSite: true,
+            maxAge: 1000 * 60 * 60 * 24, // would expire after 24 hours
+            httpOnly: true, // The cookie only accessible by the web server
+        }
+
+        res.cookie('x-access-token', token, options)
 
         //Return response
         return res.status(200).send({
@@ -85,8 +92,8 @@ exports.signin = async (req, res) => {
             accessToken: token
         })
     } catch (err) {
-        console.log("Error while signing", err.message);
-        return res.status(500) / send({
+        console.log("Error while signing in", err.message);
+        return res.status(500).send({
             message: "Some internal server error occured while signing in"
         })
     }

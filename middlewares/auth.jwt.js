@@ -1,5 +1,5 @@
 /**
- * Middleware to validate the access token passed in the request header
+ * Middleware to validate the access token passed in the request header // req.cookie
  */
 
 const jwt = require("jsonwebtoken");
@@ -9,7 +9,8 @@ const constants = require("../utils/constants");
 
 verifyToken = (req, res, next) => {
     //Read the token passed in the header
-    const token = req.headers["x-access-token"];
+    console.log(req.cookies);
+    const token = req.cookies['x-access-token'];
   
     //validate token
     if(!token) {
@@ -24,7 +25,7 @@ verifyToken = (req, res, next) => {
                 message : "Unauthorized token"
             })
         }
-        req.body.userName = decoded.userName;
+        req.body.userName = decoded.userName;  //to be used later
         next();
     });
 }
@@ -34,7 +35,8 @@ verifyToken = (req, res, next) => {
  */
 
 isAdmin = async (req, res, next) => {
-
+    console.log(req.body);
+    // console.log(req.cookies);
     const user = await User.findOne({userName : req.body.userName});
     if(user && user.role === constants.roles.admin) {
         next();

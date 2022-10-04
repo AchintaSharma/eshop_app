@@ -3,7 +3,11 @@ const constants = require("../utils/constants");
 
 //Create user schema
 const userSchema = new mongoose.Schema({
-    //id:
+    _id: {
+        type : Number,
+        required : true,
+        unique : true
+    },
     //created: 
     email : {
         type : String,

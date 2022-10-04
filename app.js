@@ -9,12 +9,14 @@ const dbConfig = require("./configs/db.config");
 const User = require("./models/user.model");
 const constants = require("./utils/constants")
 const bcrypt = require("bcryptjs");
+const cookieParser = require('cookie-parser');
 
 
 /**
  * Read JSON request body
  */
 app.use(express.json());
+app.use(cookieParser());
 
 /**
  * Connect to the DB
@@ -53,13 +55,14 @@ async function init () {
 
     try {
         const user = await User.create({
-            email : "23achinta@gmail.com",
-            firstName : "Achinta",
-            lastName : "Sharma",
-            password : bcrypt.hashSync("welcome", 10),
-            phoneNumber : "7002795845",
+            _id : await User.find().count() + 1,
+            email : "admin@upgrad.com",
+            firstName : "upGrad",
+            lastName : "Admin",
+            password : bcrypt.hashSync("password", 10),
+            phoneNumber : "12345678",
             role : constants.roles.admin,
-            userName : "AchintaSharma"
+            userName : "admin_upgrad"
         })
 
         console.log(user);
