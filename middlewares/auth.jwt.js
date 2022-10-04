@@ -10,19 +10,19 @@ const constants = require("../utils/constants");
 verifyToken = (req, res, next) => {
     //Read the token passed in the header
     console.log(req.cookies);
-    const token = req.cookies['x-access-token'];
-  
+    const token = req.cookies['x-access-token'] ? req.cookies['x-access-token'] : req.headers['x-access-token'];
+
     //validate token
-    if(!token) {
+    if (!token) {
         return res.status(401).send({
-            message : "No token provided!"
+            message: "No token provided!"
         });
     }
 
     jwt.verify(token, secretConfig.secret, (err, decoded) => {
-        if(err){
+        if (err) {
             return res.status(401).send({
-                message : "Unauthorized token"
+                message: "Unauthorized token"
             })
         }
         req.body.userName = decoded.userName;  //to be used later
@@ -37,17 +37,17 @@ verifyToken = (req, res, next) => {
 isAdmin = async (req, res, next) => {
     console.log(req.body);
     // console.log(req.cookies);
-    const user = await User.findOne({userName : req.body.userName});
-    if(user && user.role === constants.roles.admin) {
+    const user = await User.findOne({ userName: req.body.userName });
+    if (user && user.role === constants.roles.admin) {
         next();
     } else {
         return res.status(403).send({
-            message : "Unauthorized! Only ADMIN is allowed to make this call"
+            message: "Unauthorized! Only ADMIN is allowed to make this call"
         })
     }
 }
 
 module.exports = {
-    verifyToken : verifyToken,
-    isAdmin : isAdmin
+    verifyToken: verifyToken,
+    isAdmin: isAdmin
 }
