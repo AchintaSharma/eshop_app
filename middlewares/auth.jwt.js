@@ -10,10 +10,10 @@ const constants = require("../utils/constants");
 verifyToken = (req, res, next) => {
     //Read the token passed in the header
     const token = req.headers["x-access-token"];
-
+  
     //validate token
     if(!token) {
-        return res.status(403).send({
+        return res.status(401).send({
             message : "No token provided!"
         });
     }
@@ -40,7 +40,7 @@ isAdmin = async (req, res, next) => {
         next();
     } else {
         return res.status(403).send({
-            message : "Only ADMIN is allowed to make this call"
+            message : "Unauthorized! Only ADMIN is allowed to make this call"
         })
     }
 }

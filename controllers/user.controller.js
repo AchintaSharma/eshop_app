@@ -10,11 +10,8 @@ exports.findAllUsers = async (req, res) => {
         const users = await User.find().lean();
 
         if (!users) {
-            return res.status(400).send({
-                message: "No records found"
-            })
+            return res.status(200).send([])
         }
-        console.log(users);
         // Remove private data 
     
         users.forEach(object => {
@@ -24,7 +21,7 @@ exports.findAllUsers = async (req, res) => {
         console.log(users);
 
         //Return all users 
-        res.status(200).send(users);
+        return res.status(200).send(users);
     } catch (err) {
         console.log("Error while fetching all the users", err.message)
     }
