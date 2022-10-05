@@ -1,5 +1,5 @@
 /**
- * Middleware to validate the access token passed in the request header // req.cookie
+ * Middleware to validate the access token passed in the request header
  */
 
 const jwt = require("jsonwebtoken");
@@ -9,12 +9,9 @@ const constants = require("../utils/constants");
 
 verifyToken = (req, res, next) => {
 
-    //Read the token passed in the header    
-    const token = req.headers['x-auth-token'] ? req.headers['x-auth-token'] : req.cookies['x-access-token'];
-    // const token = req.headers['x-auth-token']
-    // console.log("header check: ", req.header);
-
-    // console.log("\ntoken: ", token);
+    //Read the token passed in the header / cookie    
+    // const token = req.headers['x-auth-token'] ? req.headers['x-auth-token'] : req.cookies['x-access-token'];
+    const token = req.headers['x-auth-token'];
 
     //validate token
     if (!token) {
@@ -51,37 +48,38 @@ isAdmin = async (req, res, next) => {
     }
 }
 
-isLoggedIn = async (req, res, next) => {
-    //TODO
+/**
+ * Middleware to check if the user is logged in
+*/
+
+isLoggedIn = (req, res, next) => {
     //Read in headers if not in cookies
-    const token = req.headers['x-auth-token'] ? req.headers['x-auth-token'] : req.cookies['x-access-token'];
+    // const token = req.headers['x-auth-token'] ? req.headers['x-auth-token'] : req.cookies['x-access-token'];
+
+    //Read headers for token
+    const token = req.headers['x-auth-token'];
     //verify the token
-    if (token) {
-        jwt.verify(token, secretConfig.secret, (err, decoded) => {
+    if (!token) {
+        return res.status(401).send({
+            message: "Please login first to access this endpoint!"
+        });
+    }
+
+    jwt.verify(token, secretConfig.secret, (err, decoded) => {
         if (err) {
             return res.status(401).send({
                 message: "Unauthorized token"
             })
         }
-
         let options = {
             sameSite: true,
             maxAge: 1000 * 60 * 60 * 24, // would expire after 24 hours
             httpOnly: true, // The cookie only accessible by the web server
         }
-
-        res.cookie('x-access-token', token, options)
-
+        // res.cookie('x-access-token', token, options)
         res.header('x-auth-token', token);
-     
         next();
     });
-        next();
-    } else {
-        return res.status(400).send({
-            message: "Please login first to access this endpoint!"
-        })
-    }
 }
 
 module.exports = {

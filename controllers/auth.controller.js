@@ -73,16 +73,19 @@ exports.signin = async (req, res) => {
             createdAt: Date.now()
         }, authSecret.secret, { expiresIn: 120 })
 
-        //Set token into cookies
+    /**
+     *  //Set token into cookies
         let options = {
             sameSite: true,
-            maxAge: 1000 * 60 * 60 * 24, // would expire after 24 hours
-            httpOnly: true, // The cookie only accessible by the web server
+            maxAge: 1000 * 60 * 60 * 24, 
+                // would expire after 24 hours
+            httpOnly: true,        
+                // The cookie only accessible by the web server
         }
-
         res.cookie('x-access-token', token, options)
+        */
 
-        // res.header('x-auth-token', token);
+        res.header('x-auth-token', token);
         //Return response
         return res.status(200).send({
             email: user.email,
