@@ -32,7 +32,7 @@ const addressSchema = new mongoose.Schema({
         type : mongoose.Schema.Types.ObjectId,
         ref : 'User'
     }
-}, {versionKey : false})
+}, {timestamps : true, versionKey : false})
 
 module.exports = mongoose.model('Address', addressSchema);
 

@@ -55,7 +55,8 @@ isAdmin = async (req, res, next) => {
 isLoggedIn = (req, res, next) => {
     //Read in headers if not in cookies
     // const token = req.headers['x-auth-token'] ? req.headers['x-auth-token'] : req.cookies['x-access-token'];
-
+    // console.log("inside is logged in , checking req body");
+    // console.log(req.body);
     //Read headers for token
     const token = req.headers['x-auth-token'];
     //verify the token
@@ -65,18 +66,15 @@ isLoggedIn = (req, res, next) => {
         });
     }
 
-    jwt.verify(token, secretConfig.secret, (err, decoded) => {
+    jwt.verify(token, secretConfig.secret, async (err, decoded) => {
         if (err) {
             return res.status(401).send({
                 message: "Unauthorized token"
             })
         }
-        let options = {
-            sameSite: true,
-            maxAge: 1000 * 60 * 60 * 24, // would expire after 24 hours
-            httpOnly: true, // The cookie only accessible by the web server
-        }
-        // res.cookie('x-access-token', token, options)
+
+        req.body.userName = decoded.userName;
+
         res.header('x-auth-token', token);
         next();
     });

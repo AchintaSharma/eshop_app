@@ -1,29 +1,35 @@
+const { db } = require('../models/address.model');
 const Address = require('../models/address.model');
+const User = require('../models/user.model');
 
 //TODO : create middleware to verify req body of address
 
 exports.createAddress = async (req, res) => {
+    //Reading the address request body
+    const user = await User.findOne({userName : req.body.userName});
     const addressObj = {
-        zipCode : req.body.zipCode,
-        state : req.body.state,
+        name : req.body.name,
+        phoneNumber : req.body.phoneNumber,
         street : req.body.street,
         landmark : req.body.landmark ? req.body.landmark : "",
         city : req.body.city,
-        phoneNumber : req.body.phoneNumber,
-        name : req.body.name
+        state : req.body.state,
+        zipCode : req.body.zipCode,
+        userId : user._id
     }
-    console.log(addressObj);
     try {
         const address = await Address.create(addressObj);
-
+        console.log(address);
         const addressResp = {
-            zipCode : address.zipCode,
-            state : address.state,
+            name : address.name,
+            phoneNumber : address.phoneNumber,
             street : address.street,
             landmark : address.landmark,
             city : address.city,
-            phoneNumber : address.phoneNumber,
-            name : address.name
+            state : address.state,
+            zipCode : address.zipCode,
+            userId : address.userId,
+            user : user
         }
         return res.status(200).send(addressResp);
 
