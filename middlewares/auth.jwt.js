@@ -10,8 +10,12 @@ const constants = require("../utils/constants");
 verifyToken = (req, res, next) => {
 
     //Read the token passed in the header    
-    const token = req.cookies['x-access-token'] ? req.cookies['x-access-token'] : req.headers['x-auth-token'];
-    console.log("\ntoken: ", token)
+    const token = req.headers['x-auth-token'] ? req.headers['x-auth-token'] : req.cookies['x-access-token'];
+    // const token = req.headers['x-auth-token']
+    // console.log("header check: ", req.header);
+
+    // console.log("\ntoken: ", token);
+
     //validate token
     if (!token) {
         return res.status(401).send({
@@ -36,7 +40,7 @@ verifyToken = (req, res, next) => {
 
 isAdmin = async (req, res, next) => {
     // console.log(req.body);
-    console.log(req.cookies);
+    // console.log(req.cookies);
     const user = await User.findOne({ userName: req.body.userName });
     if (user && user.role === constants.roles.admin) {
         next();
@@ -47,7 +51,41 @@ isAdmin = async (req, res, next) => {
     }
 }
 
+isLoggedIn = async (req, res, next) => {
+    //TODO
+    //Read in headers if not in cookies
+    const token = req.headers['x-auth-token'] ? req.headers['x-auth-token'] : req.cookies['x-access-token'];
+    //verify the token
+    if (token) {
+        jwt.verify(token, secretConfig.secret, (err, decoded) => {
+        if (err) {
+            return res.status(401).send({
+                message: "Unauthorized token"
+            })
+        }
+
+        let options = {
+            sameSite: true,
+            maxAge: 1000 * 60 * 60 * 24, // would expire after 24 hours
+            httpOnly: true, // The cookie only accessible by the web server
+        }
+
+        res.cookie('x-access-token', token, options)
+
+        res.header('x-auth-token', token);
+     
+        next();
+    });
+        next();
+    } else {
+        return res.status(400).send({
+            message: "Please login first to access this endpoint!"
+        })
+    }
+}
+
 module.exports = {
     verifyToken: verifyToken,
-    isAdmin: isAdmin
+    isAdmin: isAdmin,
+    isLoggedIn: isLoggedIn
 }

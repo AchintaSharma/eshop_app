@@ -12,7 +12,7 @@ const authSecret = require("../configs/auth.config");
 exports.signup = async (req, res) => {
     //Read user signup request body
     const userObj = {
-        _id: await User.find().count() + 1,
+        id: await User.find().count() + 1,
         email: req.body.email,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -29,6 +29,7 @@ exports.signup = async (req, res) => {
         //Return response 
         const userResp = {
             _id: user._id,
+            id: user.id,
             firstName: user.firstName,
             lastName: req.body.lastName,
             email: user.email,
@@ -80,7 +81,8 @@ exports.signin = async (req, res) => {
         }
 
         res.cookie('x-access-token', token, options)
-        res.header('x-auth-token', token);
+
+        // res.header('x-auth-token', token);
         //Return response
         return res.status(200).send({
             email: user.email,
