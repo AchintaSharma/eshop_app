@@ -9,7 +9,7 @@ const validateAddressRequestBody = (req, res, next) => {
         });
     } else if (isValidZipCode(req.body.zipCode)) {
         return res.status(400).send({
-            message: "Invalid zio code!"
+            message: "Invalid zip code!"
         });
     } 
 
