@@ -71,7 +71,7 @@ exports.signin = async (req, res) => {
             userName: user.userName,
             role: user.role,
             createdAt: Date.now()
-        }, authSecret.secret, { expiresIn: 120 })
+        }, authSecret.secret, { expiresIn: 600 })
 
     /**
      *  //Set token into cookies
