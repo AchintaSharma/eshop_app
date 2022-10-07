@@ -76,7 +76,6 @@ exports.saveProduct = async (req, res) => {
 }
 
 exports.updateProduct = async (req, res) => {
-
     try {
         const product = await Product.findOneAndUpdate({ _id: req.params.id }, {});
 
@@ -113,22 +112,24 @@ exports.updateProduct = async (req, res) => {
 }
 
 exports.deleteProduct = async (req, res) => {
-
+    console.log(req.params.id);
     try {
-        const product = await Product.findOneAndDelete({_id : req.params.id});
-
+        const product = await Product.findOne({_id : req.params.id});
+        console.log("hello product : " , product);
         if(!product) {
             return res.status(404).send({
                 message : `No Product found for ID - ${req.params.id}`
             })
         }
+        await product.remove();
+        
         res.status(200).send({
             message : `Product with ID - ${req.params.id} deleted successfully.`
         });
     } catch (err) {
         console.log("Error while deleting product: ", err.message);
         return res.status(500).send({
-            message: "Some internal server error occured while updating the product"
+            message: "Some internal server error occured while deleting the product"
         })
     } 
 }
