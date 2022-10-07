@@ -6,4 +6,6 @@ myArray = myArray.filter(function( obj ) {
 
 console.log(myArray);
 
-npm install nodemon
+// npm install nodemon
+
+// Add product request body validator
