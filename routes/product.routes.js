@@ -11,4 +11,6 @@ module.exports = (app) => {
     app.post("/eshop/api/v1/products/", [authjwt.isLoggedIn, authjwt.isAdmin], productController.saveProduct); 
 
     app.put("/eshop/api/v1/products/:id", [authjwt.isLoggedIn, authjwt.isAdmin], productController.updateProduct);
+
+    app.delete("/eshop/api/v1/products/:id", [authjwt.isLoggedIn, authjwt.isAdmin], productController.deleteProduct);
 }
