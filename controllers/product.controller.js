@@ -131,10 +131,14 @@ exports.updateProduct = async (req, res) => {
 }
 
 exports.deleteProduct = async (req, res) => {
-    console.log(req.params.id);
+    if (!isValidObjectId(req.params.id)) {
+        return res.status(400).send({
+            message: "Not a valid Object ID"
+        });
+    }
+
     try {
         const product = await Product.findOne({ _id: req.params.id });
-        console.log("hello product : ", product);
         if (!product) {
             return res.status(404).send({
                 message: `No Product found for ID - ${req.params.id}`

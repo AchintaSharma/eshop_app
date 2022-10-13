@@ -8,7 +8,7 @@ const constants = require("../utils/constants");
  */
 
 isAdmin = async (req, res, next) => {
-
+    console.log(req.body);
     const user = await User.findOne({ userName: req.body.userName });
     if (user && user.role === constants.roles.admin) {
         next();
@@ -42,8 +42,10 @@ isLoggedIn = (req, res, next) => {
                 message: "Unauthorized token"
             });
         }
+        console.log("Decoded: ", decoded);
 
         req.body.userName = decoded.userName;
+        console.log("inside jwt:", req.body.userName);
         res.header('x-auth-token', token);
         next();
     });

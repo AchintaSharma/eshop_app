@@ -13,12 +13,10 @@ exports.findAllUsers = async (req, res) => {
             return res.status(200).send([])
         }
         // Remove private data 
-    
+
         users.forEach(object => {
             delete (object["password"]);
         });
-
-        console.log(users);
 
         //Return all users 
         return res.status(200).send(users);

@@ -3,9 +3,9 @@ const mongoose = require("mongoose");
 const orderSchema = new mongoose.Schema({
     amount: {
         type: Number,
-        set: num => Math.round((num), 2),
         required: true
     },
+    quantity: Number,
     orderDate: {
         type: Date,
         default: () => Date.now(),
@@ -15,7 +15,7 @@ const orderSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'         // Check this
     },
-    address: {
+    shippingAddress: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Address'
     },
