@@ -11,7 +11,7 @@ exports.createAddress = async (req, res) => {
         name: req.body.name,
         phoneNumber: req.body.phoneNumber,
         street: req.body.street,
-        landmark: req.body.landmark ? req.body.landmark : "",
+        landmark: req.body.landmark ?? "",
         city: req.body.city,
         state: req.body.state,
         zipCode: req.body.zipCode,
@@ -22,19 +22,8 @@ exports.createAddress = async (req, res) => {
         const address = await Address.create(addressObj);
 
         const response = await Address.findOne({ name: address.name }).populate('user');
-        console.log(response);
-        // const addressResp = {
-        //     name: address.name,
-        //     phoneNumber: address.phoneNumber,
-        //     street: address.street,
-        //     landmark: address.landmark,
-        //     city: address.city,
-        //     state: address.state,
-        //     zipCode: address.zipCode,
-        //     userId: address.userId,
-        //     user: user
-        // }
-        return res.status(200).send(response);
+
+        return res.status(201).send(response);
 
     } catch (err) {
         console.log("Error while creating address: ", err.message);

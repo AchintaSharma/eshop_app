@@ -39,14 +39,13 @@ exports.signup = async (req, res) => {
         console.log("Error while creating new user", err.message);
         res.status(500).send({
             message: "Some internal error happened while inserting new user"
-        })
+        });
     }
 }
 
 /**
-     * User login
-     */
-
+  * User login
+*/
 exports.signin = async (req, res) => {
     try {
         //Check if the user exists
@@ -55,7 +54,7 @@ exports.signin = async (req, res) => {
         if (!user) {
             return res.status(400).send({
                 message: "This email has not been registered!"
-            })
+            });
         }
 
         //Check if the password is correct 
@@ -63,7 +62,7 @@ exports.signin = async (req, res) => {
         if (!isPasswordValid) {
             return res.status(401).send({
                 message: "Invalid Credentials!"
-            })
+            });
         }
 
         //Generate the token 
@@ -71,7 +70,11 @@ exports.signin = async (req, res) => {
             userName: user.userName,
             role: user.role,
             createdAt: Date.now()
-        }, authSecret.secret, { expiresIn: 600 })
+        }, authSecret.secret, { expiresIn: 600 });
+
+
+        //Pass acccess token to user in response header
+        res.header('x-auth-token', token);
 
         /**
          *  //Set token into cookies
@@ -85,17 +88,13 @@ exports.signin = async (req, res) => {
             res.cookie('x-access-token', token, options)
             */
 
-        res.header('x-auth-token', token);
         //Return response
         return res.status(200).send({
             email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            phoneNumber: user.userName,
-            role: user.role,
-            userName: user.userName,
-            accessToken: token
-        })
+            name: user.firstName + user.lastName,
+            isAuthenticated: true,
+            // accessToken: token
+        });
     } catch (err) {
         console.log("Error while signing in", err.message);
         return res.status(500).send({

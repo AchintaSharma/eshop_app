@@ -66,9 +66,7 @@ validateSignUpRequestBody = async (req, res, next) => {
     }
 
     //Validate userName
-    console.log("outside:", req.body.userName);
     if (req.body.userName) {
-        console.log("inside:", req.body.userName);
         const userNameExist = await User.findOne({ userName: req.body.userName });
         if (userNameExist) {
             return res.status(400).send({
