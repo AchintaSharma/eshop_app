@@ -49,32 +49,34 @@ validateSignUpRequestBody = async (req, res, next) => {
     }
 
     //Validate role 
-    if (req.body.role === "") {
+    if (!req.body.role || req.body.role === "") {
         req.body.role = constants.roles.user;
     }
+
     if (req.body.role === constants.roles.admin) {
         return res.status(400).send({
             message: "admin signup is not allowed"
         });
     }
+
     if (req.body.role !== constants.roles.user && req.body.role !== constants.roles.admin) {
         return res.status(400).send({
             message: "Invalid role"
         });
     }
-    
+
     //Validate userName
-    if (!req.body.userName) {
-        return res.status(400).send({
-            message: "user name is not provided"
-        });
-    } else {
+    console.log("outside:", req.body.userName);
+    if (req.body.userName) {
+        console.log("inside:", req.body.userName);
         const userNameExist = await User.findOne({ userName: req.body.userName });
-        if (userNameExist)
+        if (userNameExist) {
             return res.status(400).send({
                 message: "user name is already in use"
             });
+        }
     }
+
     next();
 }
 

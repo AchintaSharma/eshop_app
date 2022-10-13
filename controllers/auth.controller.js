@@ -5,6 +5,7 @@ const User = require("../models/user.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const authSecret = require("../configs/auth.config");
+const constants = require("../utils/constants");
 
 /**
  * User registration/signup
@@ -12,14 +13,14 @@ const authSecret = require("../configs/auth.config");
 exports.signup = async (req, res) => {
     //Read user signup request body
     const userObj = {
-        id: await User.find().count() + 1,
+        // id: await User.find().count() + 1,
         email: req.body.email,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         password: bcrypt.hashSync(req.body.password, 10),
         phoneNumber: req.body.phoneNumber,
         role: req.body.role,
-        userName: req.body.userName
+        userName: req.body.userName ?? constants.roles.userName
     }
 
     try {
@@ -29,7 +30,6 @@ exports.signup = async (req, res) => {
         //Return response 
         const userResp = {
             _id: user._id,
-            id: user.id,
             firstName: user.firstName,
             lastName: req.body.lastName,
             email: user.email,
@@ -73,17 +73,17 @@ exports.signin = async (req, res) => {
             createdAt: Date.now()
         }, authSecret.secret, { expiresIn: 600 })
 
-    /**
-     *  //Set token into cookies
-        let options = {
-            sameSite: true,
-            maxAge: 1000 * 60 * 60 * 24, 
-                // would expire after 24 hours
-            httpOnly: true,        
-                // The cookie only accessible by the web server
-        }
-        res.cookie('x-access-token', token, options)
-        */
+        /**
+         *  //Set token into cookies
+            let options = {
+                sameSite: true,
+                maxAge: 1000 * 60 * 60 * 24, 
+                    // would expire after 24 hours
+                httpOnly: true,        
+                    // The cookie only accessible by the web server
+            }
+            res.cookie('x-access-token', token, options)
+            */
 
         res.header('x-auth-token', token);
         //Return response
