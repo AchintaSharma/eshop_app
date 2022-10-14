@@ -20,7 +20,7 @@ exports.signup = async (req, res) => {
         password: bcrypt.hashSync(req.body.password, 10),
         phoneNumber: req.body.phoneNumber,
         role: req.body.role,
-        userName: req.body.userName ?? constants.roles.userName
+        userName: req.body.userName
     }
 
     try {
@@ -50,7 +50,6 @@ exports.signin = async (req, res) => {
     try {
         //Check if the user exists
         const user = await User.findOne({ email: req.body.email });
-
         if (!user) {
             return res.status(400).send({
                 message: "This email has not been registered!"
@@ -71,7 +70,6 @@ exports.signin = async (req, res) => {
             role: user.role,
             createdAt: Date.now()
         }, authSecret.secret, { expiresIn: 600 });
-
 
         //Pass acccess token to user in response header
         res.header('x-auth-token', token);
@@ -96,7 +94,7 @@ exports.signin = async (req, res) => {
             // accessToken: token
         });
     } catch (err) {
-        console.log("Error while signing in", err.message);
+        console.log("Error while signing in: ", err.message);
         return res.status(500).send({
             message: "Some internal server error occured while signing in"
         })

@@ -13,7 +13,7 @@ const orderSchema = new mongoose.Schema({
     },
     product: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'         // Check this
+        ref: 'Product'         // Check this
     },
     shippingAddress: {
         type: mongoose.Schema.Types.ObjectId,

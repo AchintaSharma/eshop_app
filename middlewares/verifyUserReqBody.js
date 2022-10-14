@@ -66,6 +66,12 @@ validateSignUpRequestBody = async (req, res, next) => {
     }
 
     //Validate userName
+    if (!req.body.userName) {
+        return res.status(400).send({
+            message: "User name is not provided"
+        });
+    }
+
     if (req.body.userName) {
         const userNameExist = await User.findOne({ userName: req.body.userName });
         if (userNameExist) {

@@ -1,14 +1,10 @@
 const Order = require('../models/order.model');
 const User = require('../models/user.model');
-const Product = require('../models/product.model');
-const mongoose = require('mongoose');
+
 
 exports.createOrder = async (req, res) => {
-    console.log("request body: ", req.body);
+
     const user = await User.findOne({ userName: req.body.userName });
-    console.log("user: ", user);
-    // const product = await Product.findOne({ _id: req.body.productId });
-    // console.log(product);
 
     const orderBody = {
         user: user._id,
@@ -18,14 +14,12 @@ exports.createOrder = async (req, res) => {
         orderDate: (new Date()).toISOString(),
         shippingAddress: req.body.addressId
     }
-    console.log("orderBody: ", orderBody);
     try {
         const order = await Order.create(orderBody);
 
-        const result = await Order.findOne({ _id: order._id }).populate('user').populate('product').populate('shippingAddress');
+        const result = await Order.findOne({ _id: order._id }).populate('user').populate('shippingAddress').populate('product');
 
-        console.log("order: ", result);
-        return res.status(200).send(result);
+        return res.status(201).send(result);
 
     } catch (err) {
         console.log("Error while creating order: ", err.message);
@@ -34,5 +28,6 @@ exports.createOrder = async (req, res) => {
         });
     }
 }
+
 
 

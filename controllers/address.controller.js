@@ -1,10 +1,9 @@
 const Address = require('../models/address.model');
 const User = require('../models/user.model');
 
-//TODO : create middleware to verify req body of address
 
 exports.createAddress = async (req, res) => {
-    //Reading the address request body
+
     const user = await User.findOne({ userName: req.body.userName });
 
     const addressObj = {
@@ -31,5 +30,4 @@ exports.createAddress = async (req, res) => {
             message: "Some internal server error occured while creating the address"
         })
     }
-
 }

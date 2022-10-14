@@ -3,7 +3,6 @@ const Address = require('../models/address.model');
 const mongoose = require('mongoose')
 
 const validateOrder = async (req, res, next) => {
-    // console.log(req.body);
 
     if (!isValidObjectId(req.body.addressId)) {
         return res.status(400).send({
@@ -19,7 +18,8 @@ const validateOrder = async (req, res, next) => {
 
     try {
         const orderProduct = await Product.findOne({ _id: req.body.productId });
-
+        // req.body.product = orderProduct;  // TODO: CHECK AT LAST
+        req.body.productId = new mongoose.Types.ObjectId(req.body.productId);
         if (!orderProduct) {
             return res.status(404).send({
                 message: `No Product found for ID - ${req.body.product}`
@@ -35,6 +35,9 @@ const validateOrder = async (req, res, next) => {
         }
 
         const orderAddress = await Address.findOne({ _id: req.body.addressId });
+
+        req.body.addressId = new mongoose.Types.ObjectId(req.body.addressId);
+
 
         if (!orderAddress) {
             return res.status(404).send({
@@ -53,7 +56,6 @@ const validateOrder = async (req, res, next) => {
         });
     }
 }
-
 
 const isValidObjectId = id => {
     if (mongoose.Types.ObjectId.isValid(id)) {
