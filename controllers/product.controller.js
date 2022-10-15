@@ -50,7 +50,7 @@ exports.searchProductById = async (req, res) => {
         const product = await Product.findOne({ _id: req.params.id });
 
         if (!product) {
-            return res.status(200).send({
+            return res.status(404).send({
                 message: `No Product found for ID ${req.params.id}`
             })
         }
@@ -104,17 +104,11 @@ exports.updateProduct = async (req, res) => {
             });
         } else {
             product.name = req.body.name ?? product.name;
-
             product.availableItems = req.body.availableItems ?? product.availableItems;
-
             product.price = req.body.price ?? product.price;
-
             product.category = req.body.category ?? product.category;
-
             product.description = req.body.description ?? product.description;
-
             product.imageUrl = req.body.imageUrl ?? product.imageUrl;
-
             product.manufacturer = req.body.manufacturer ?? product.manufacturer;
 
             const updatedProduct = await product.save();

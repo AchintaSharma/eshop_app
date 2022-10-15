@@ -96,7 +96,7 @@ exports.signin = async (req, res) => {
     } catch (err) {
         console.log("Error while signing in: ", err.message);
         return res.status(500).send({
-            message: "Some internal server error occured while signing in"
+            message: "Some internal server error occured while logging in"
         })
     }
 }
