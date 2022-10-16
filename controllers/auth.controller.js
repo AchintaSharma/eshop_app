@@ -38,7 +38,7 @@ exports.signup = async (req, res) => {
     } catch (err) {
         console.log("Error while creating new user", err.message);
         res.status(500).send({
-            message: "Some internal error happened while inserting new user"
+            message: "Some internal error occured while inserting new user"
         });
     }
 }

@@ -2,14 +2,12 @@ const Product = require('../models/product.model');
 const mongoose = require('mongoose');
 
 exports.searchAllProducts = async (req, res) => {
-
     //Verify query object
-
     const productQueryObj = {
         category: req.query.category ?? "",
         direction: req.query.direction ? req.query.direction.toLowerCase() : "desc",
         name: req.query.name ?? "",
-        sortBy: req.query.sortBy ? req.query.sortBy : "productId"
+        sortBy: req.query.sortBy ? req.query.sortBy : "_id"
     }
     try {
         const products = await Product.find({

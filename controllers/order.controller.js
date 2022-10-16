@@ -1,4 +1,5 @@
 const Order = require('../models/order.model');
+const Product = require('../models/product.model');
 const User = require('../models/user.model');
 
 
@@ -16,6 +17,8 @@ exports.createOrder = async (req, res) => {
     }
     try {
         const order = await Order.create(orderBody);
+
+        const productUpdate = await Product.findOneAndUpdate({ _id: req.body.productId }, { $inc: { availableItems: -1 } });
 
         const result = await Order.findOne({ _id: order._id }).populate('user').populate('shippingAddress').populate('product');
 

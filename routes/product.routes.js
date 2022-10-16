@@ -1,9 +1,10 @@
 const productController = require('../controllers/product.controller');
 const authjwt = require('../middlewares/auth.jwt');
 const productValidator = require('../middlewares/verifyProductRequestBody');
+const productSearchValidator = require('../middlewares/verifyProductSearchQuery');
 
 module.exports = (app) => {
-    app.get("/eshop/api/v1/products/", productController.searchAllProducts);
+    app.get("/eshop/api/v1/products/", [productSearchValidator.validateProductSearchQuery], productController.searchAllProducts);
 
     app.get("/eshop/api/v1/products/categories/", productController.getProductCategories);
 
