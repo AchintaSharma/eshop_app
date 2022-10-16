@@ -15,3 +15,5 @@ module.exports = (app) => {
 
     app.delete("/eshop/api/v1/products/:id", [authjwt.isLoggedIn, authjwt.isAdmin], productController.deleteProduct);
 }
+
+
