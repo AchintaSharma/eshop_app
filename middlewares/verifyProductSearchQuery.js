@@ -2,7 +2,7 @@ const Product = require('../models/product.model');
 
 const validateProductSearchQuery = async (req, res, next) => {
     try {
-        if (req.query.category) {
+        if (req.query.category != undefined || req.query.category == "") {
             const isCategoryValid = await Product.findOne({ category: req.query.category });
             if (!isCategoryValid) {
                 return res.status(400).send({
@@ -27,7 +27,10 @@ const validateProductSearchQuery = async (req, res, next) => {
             }
         }
         if (req.query.sortBy) {
-            const isSortParameterValid = Product.findOne({}).hasOwnProperty(req.query.sortBy);
+            const params = req.query.sortBy;
+            const allowedFields = ["_id", "availableItems", "category", "description", "imageUrl", "manufacturer", "name", "price"];
+            const isSortParameterValid = allowedFields.includes(params);
+            console.log(isSortParameterValid);
             if (!isSortParameterValid) {
                 return res.status(400).send({
                     message: "Invalid sort parameter "
@@ -40,10 +43,7 @@ const validateProductSearchQuery = async (req, res, next) => {
             message: "Some internal  error occured while validating the product search query"
         });
     }
-
-
     next();
-    // console.log(`category : ${isCategoryValid}, direction : ${isDirectionValid}, name : ${isProductNameValid}, sort By : ${isSortParameterValid} `);
 }
 
 module.exports = {

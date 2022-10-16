@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 
 exports.searchAllProducts = async (req, res) => {
     //Verify query object
+    console.log(req.query);
     const productQueryObj = {
         category: req.query.category ?? "",
         direction: req.query.direction ? req.query.direction.toLowerCase() : "desc",
