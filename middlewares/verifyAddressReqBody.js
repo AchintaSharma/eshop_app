@@ -36,12 +36,12 @@ const validateAddressRequestBody = (req, res, next) => {
         });
     }
 
-    //Validate phone number
-    if (!req.body.phoneNumber) {
+    //Validate contact number
+    if (!req.body.contactNumber) {
         return res.status(400).send({
-            message: "Phone number is not provided"
+            message: "Contact number is not provided"
         });
-    } else if (!isValidPhoneNo(req.body.phoneNumber)) {
+    } else if (!isValidPhoneNo(req.body.contactNumber)) {
         return res.status(400).send({
             message: "Invalid phone number!"
         });

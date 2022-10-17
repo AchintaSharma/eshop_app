@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const addressSchema = new mongoose.Schema({
+    _id: Number,
     city: {
         type: String,
         required: true
@@ -10,7 +11,7 @@ const addressSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    phoneNumber: {
+    contactNumber: {
         type: String,
         required: true
     },
@@ -27,10 +28,10 @@ const addressSchema = new mongoose.Schema({
         required: true
     },
     user: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Number,
         ref: 'User'
     }
-}, { timestamps: true, versionKey: false })
+}, { _id: false, timestamps: true, versionKey: false })
 
 module.exports = mongoose.model('Address', addressSchema);
 

@@ -3,12 +3,7 @@ const constants = require("../utils/constants");
 
 //Create user schema
 const userSchema = new mongoose.Schema({
-    // _id: {
-    //     type : Number,
-    //     required : true,
-    //     unique : true
-    // },
-    //created: 
+    _id: Number,
     email: {
         type: String,
         required: true,
@@ -26,7 +21,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    phoneNumber: {
+    contactNumber: {
         type: String,
         required: true
     },
@@ -36,6 +31,6 @@ const userSchema = new mongoose.Schema({
         enum: [constants.roles.admin, constants.roles.user]
     },
     userName: String
-}, { timestamps: true, versionKey: false });
+}, { _id: false, timestamps: true, versionKey: false });
 
 module.exports = mongoose.model('User', userSchema);

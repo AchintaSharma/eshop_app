@@ -23,10 +23,10 @@ validateProductRequestBody = async (req, res, next) => {
     }
     if (!req.body.description) {
         return res.status(400).send({
-            message: "category is not provided"
+            message: "description is not provided"
         });
     }
-    if (!req.body.imageUrl) {
+    if (!req.body.imageURL) {
         return res.status(400).send({
             message: "image url is not provided"
         });

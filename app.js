@@ -10,8 +10,8 @@ const User = require("./models/user.model");
 const constants = require("./utils/constants")
 const bcrypt = require("bcryptjs");
 const cookieParser = require('cookie-parser');
-
-
+const Counter = require('./models/counter.model');
+const counter = require('./middlewares/counterIncrement');
 /**
  * Read JSON request body
  */
@@ -40,34 +40,69 @@ db.once("open", () => {
 /**
  * Initialize : Check for and create ADMIN creds
  */
-async function init () {
+async function init() {
+    //check if counters are initiated
+    try {
+        const isUserCounterInitated = await Counter.findOne({ category: 'userId' });
+        if (!isUserCounterInitated) {
+            const userCounter = await Counter.create({
+                category: 'userId',
+                count: 1
+            });
+        }
+        const isAddressCounterInitated = await Counter.findOne({ category: 'addressId' });
+        if (!isAddressCounterInitated) {
+            const addressCounter = await Counter.create({
+                category: 'addressId',
+                count: 1
+            });
+        }
+        const isProductCounterInitated = await Counter.findOne({ category: 'productId' });
+        if (!isProductCounterInitated) {
+            const productCounter = await Counter.create({
+                category: 'productId',
+                count: 1
+            });
+        }
+        const isOrderCounterInitated = await Counter.findOne({ category: 'orderId' });
+        if (!isOrderCounterInitated) {
+            const orderCounter = await Counter.create({
+                category: 'orderId',
+                count: 1
+            });
+        }
+    } catch (err) {
+        console.log("Error while creating the counters", err.message);
+    }
+
     //Check if admin is present
     try {
-        const adminUser = await User.findOne({role : constants.roles.admin});
+        const adminUser = await User.findOne({ role: constants.roles.admin });
 
-        if(adminUser) {
+        if (adminUser) {
             console.log("Admin user already exists");
             return;
-        } 
+        }
     } catch (err) {
         console.log("Error while fetching user", err.message);
     }
-
+    //Create admin
     try {
-        const user = await User.create({
-            _id : await User.find().count() + 1,
-            email : "admin@upgrad.com",
-            firstName : "upGrad",
-            lastName : "Admin",
-            password : bcrypt.hashSync("password", 10),
-            phoneNumber : "12345678",
-            role : constants.roles.admin,
-            userName : "admin_upgrad"
-        })
-
-        console.log(user);
+        const adminObj = {
+            _id: await counter.incrementUserCounter(1),
+            email: "admin@upgrad.com",
+            firstName: "upGrad",
+            lastName: "Admin",
+            password: bcrypt.hashSync("password", 10),
+            contactNumber: "12345678",
+            role: constants.roles.admin,
+            userName: "admin_upgrad"
+        }
+        const admin = await User.create(adminObj);
+        console.log(admin);
     } catch (err) {
-        console.log("Error while storing the user", err.message);
+        await counter.incrementUserCounter(-1),
+            console.log("Error while storing the admin", err.message);
     }
 }
 

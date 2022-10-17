@@ -5,7 +5,7 @@ const User = require("../models/user.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const authSecret = require("../configs/auth.config");
-const constants = require("../utils/constants");
+const counter = require('../middlewares/counterIncrement');
 
 /**
  * User registration/signup
@@ -13,12 +13,12 @@ const constants = require("../utils/constants");
 exports.signup = async (req, res) => {
     //Read user signup request body
     const userObj = {
-        // id: await User.find().count() + 1,
+        _id: await counter.incrementUserCounter(1),
         email: req.body.email,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         password: bcrypt.hashSync(req.body.password, 10),
-        phoneNumber: req.body.phoneNumber,
+        contactNumber: req.body.contactNumber,
         role: req.body.role,
         userName: req.body.userName
     }
@@ -36,6 +36,7 @@ exports.signup = async (req, res) => {
         }
         res.status(201).send(userResp);
     } catch (err) {
+        await counter.incrementUserCounter(1);
         console.log("Error while creating new user", err.message);
         res.status(500).send({
             message: "Some internal error occured while inserting new user"

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema({
+    _id: Number,
     availableItems: {
         type: Number,
         required: true
@@ -13,7 +14,7 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    imageUrl: {
+    imageURL: {
         type: String,
         required: true
     },
@@ -29,6 +30,6 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: true
     }
-}, { timestamps: true, versionKey: false });
+}, { _id: false, timestamps: true, versionKey: false });
 
 module.exports = mongoose.model('Product', productSchema);

@@ -1,9 +1,9 @@
 const Product = require('../models/product.model');
 const mongoose = require('mongoose');
+const counter = require('../middlewares/counterIncrement');
 
 exports.searchAllProducts = async (req, res) => {
     //Verify query object
-    console.log(req.query);
     const productQueryObj = {
         category: req.query.category ?? "",
         direction: req.query.direction ? req.query.direction.toLowerCase() : "desc",
@@ -41,13 +41,6 @@ exports.getProductCategories = async (req, res) => {
 }
 
 exports.searchProductById = async (req, res) => {
-    //Validate objectId to handle potential error
-    if (!isValidObjectId(req.params.id)) {
-        return res.status(400).send({
-            message: "Not a valid Object ID"
-        });
-    }
-
     try {
         const product = await Product.findOne({ _id: req.params.id });
 
@@ -67,21 +60,23 @@ exports.searchProductById = async (req, res) => {
 
 exports.saveProduct = async (req, res) => {
     const productObj = {
+        _id: await counter.incrementProductCounter(1),
         name: req.body.name,
         category: req.body.category,
         price: req.body.price,
         description: req.body.description,
         manufacturer: req.body.manufacturer,
         availableItems: req.body.availableItems,
-        imageUrl: req.body.imageUrl
+        imageURL: req.body.imageURL
     }
 
     try {
         const product = await Product.create(productObj);
-        delete product.imageUrl;
+        delete product.imageURL;
         res.status(201).send(product);
 
     } catch (err) {
+        await counter.incrementProductCounter(-1)
         console.log("Error while creating product: ", err.message);
         return res.status(500).send({
             message: "Some internal server error occured while creating the product"
@@ -90,13 +85,6 @@ exports.saveProduct = async (req, res) => {
 }
 
 exports.updateProduct = async (req, res) => {
-
-    if (!isValidObjectId(req.params.id)) {
-        return res.status(400).send({
-            message: "Not a valid Object ID"
-        });
-    }
-
     try {
         const product = await Product.findOneAndUpdate({ _id: req.params.id }, {});
 
@@ -110,7 +98,7 @@ exports.updateProduct = async (req, res) => {
             product.price = req.body.price ?? product.price;
             product.category = req.body.category ?? product.category;
             product.description = req.body.description ?? product.description;
-            product.imageUrl = req.body.imageUrl ?? product.imageUrl;
+            product.imageURL = req.body.imageURL ?? product.imageURL;
             product.manufacturer = req.body.manufacturer ?? product.manufacturer;
 
             const updatedProduct = await product.save();
@@ -127,12 +115,6 @@ exports.updateProduct = async (req, res) => {
 }
 
 exports.deleteProduct = async (req, res) => {
-    if (!isValidObjectId(req.params.id)) {
-        return res.status(400).send({
-            message: "Not a valid Object ID"
-        });
-    }
-
     try {
         const product = await Product.findOne({ _id: req.params.id });
         if (!product) {
@@ -151,13 +133,4 @@ exports.deleteProduct = async (req, res) => {
             message: "Some internal server error occured while deleting the product"
         })
     }
-}
-
-const isValidObjectId = id => {
-    if (mongoose.Types.ObjectId.isValid(id)) {
-        if ((String)(new mongoose.Types.ObjectId(id)) === id)
-            return true;
-        return false;
-    }
-    return false;
 }

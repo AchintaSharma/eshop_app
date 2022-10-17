@@ -28,9 +28,8 @@ const validateProductSearchQuery = async (req, res, next) => {
         }
         if (req.query.sortBy) {
             const params = req.query.sortBy;
-            const allowedFields = ["_id", "availableItems", "category", "description", "imageUrl", "manufacturer", "name", "price"];
+            const allowedFields = ["_id", "availableItems", "category", "description", "imageURL", "manufacturer", "name", "price"];
             const isSortParameterValid = allowedFields.includes(params);
-            console.log(isSortParameterValid);
             if (!isSortParameterValid) {
                 return res.status(400).send({
                     message: "Invalid sort parameter "

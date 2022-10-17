@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const orderSchema = new mongoose.Schema({
+    _id: Number,
     amount: {
         type: Number,
         required: true
@@ -12,17 +13,17 @@ const orderSchema = new mongoose.Schema({
         required: true
     },
     product: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Number,
         ref: 'Product'         // Check this
     },
     shippingAddress: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Number,
         ref: 'Address'
     },
     user: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Number,
         ref: 'User'
     }
-}, { timestamps: true, versionKey: false });
+}, { _id: false, timestamps: true, versionKey: false });
 
 module.exports = mongoose.model('Order', orderSchema);
